@@ -107,16 +107,18 @@ class FeedFragment : Fragment() {
             }
             data.observe(viewLifecycleOwner) { feedModel ->
                 val newPost =
-                    feedModel.posts.size > adapter.currentList.size && adapter.itemCount > 0
+                    feedModel.posts.size > adapter.currentList.size /* && adapter.itemCount > 0 */
                 adapter.submitList(feedModel.posts) {
                     if (newPost) {
                         binding.postList?.smoothScrollToPosition(0)
                     }
                 }
-                binding.emptyText?.isVisible = feedModel.empty
+                if (feedModel.empty) binding.emptyText?.visibility = View.VISIBLE
+//                binding.emptyText?.isVisible = feedModel.empty
             }
             newerCount.observe(viewLifecycleOwner) { count ->
-                if (count > 0) {
+                Log.d("newerCount", "$count")
+                if (count > -1) {
                     binding.refreshButton?.visibility = View.VISIBLE
                 }
             }
@@ -128,6 +130,7 @@ class FeedFragment : Fragment() {
             postList?.adapter = adapter
             swipeContainer?.setOnRefreshListener {
                 viewModel.loadPosts()
+                refreshButton?.visibility = View.GONE
             }
             refreshButton?.apply {
                 visibility = View.GONE

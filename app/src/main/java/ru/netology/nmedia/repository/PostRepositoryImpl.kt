@@ -23,7 +23,6 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override fun getNewer(id: Long): Flow<Int> = flow {
         while(true) {
             delay(10_000L)
-            println(0)
             val response = PostsApi.retrofitService.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -35,7 +34,6 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 PostEntity.toEntity(it).copy(shouldBeDisplayed = false)
             }
             dao.insert(postsToInsert)
-            println(1)
             emit(body.size)
         }
     }.catch { e -> throw AppError.from(e) }
@@ -151,7 +149,9 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     }
 
     override suspend fun showNewPosts() {
+        Log.d("PostRepository", "Updating posts to be displayed")
         dao.showNewPosts()
+        Log.d("PostRepository", "Posts updated")
     }
 
 

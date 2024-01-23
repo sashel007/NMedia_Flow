@@ -15,7 +15,7 @@ data class PostEntity(
     val published: String,
     val likedByMe: Boolean,
     val likes: Int = 0,
-    val shouldBeDisplayed: Boolean = false
+    val shouldBeDisplayed: Boolean = true
 //    var sharings: Int,
 //    var video: String?
 ) {
