@@ -1,11 +1,10 @@
 package ru.netology.nmedia.repository
 
-import kotlinx.coroutines.Dispatchers
+import android.util.Log
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import retrofit2.Response
 import ru.netology.nmedia.api.PostsApi
@@ -13,7 +12,6 @@ import ru.netology.nmedia.dto.PostDao
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.PostEntity
 import ru.netology.nmedia.dto.toDto
-import ru.netology.nmedia.dto.toEntity
 import java.io.IOException
 import java.sql.SQLException
 
@@ -59,8 +57,10 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
             return body
         } catch (e: IOException) {
+            Log.e("PostRepository", "Network error", e)
             throw NetworkError
         } catch (e: Exception) {
+            Log.e("PostRepository", "Unknown error", e)
             throw UnknownError
         }
     }
@@ -149,6 +149,11 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             throw UnknownError
         }
     }
+
+    override suspend fun showNewPosts() {
+        dao.showNewPosts()
+    }
+
 
 }
 

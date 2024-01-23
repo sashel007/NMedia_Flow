@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -84,13 +84,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         try {
             _dataState.value = FeedModelState(loading = true)
             repository.getAll()
+            println(repository.getAll())
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
+            e.printStackTrace()
             _dataState.value = FeedModelState(error = true)
         }
     }
 
-private fun refreshPosts() = viewModelScope.launch {
+    private fun refreshPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
             repository.getAll()
@@ -231,7 +233,16 @@ private fun refreshPosts() = viewModelScope.launch {
     private fun resetEditingState() {
         edited.postValue(empty)
     }
+
+    // Метод для оьновления постов
+    fun onFreshPostsClicked() = viewModelScope.launch {
+        repository.showNewPosts()
+
+        // Обновление данных для UI
+        refreshPosts()
+    }
 }
+
 
 
 
